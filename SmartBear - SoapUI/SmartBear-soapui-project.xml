@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="0870cadf-f63e-4c8f-8a91-b7e7b748a168" activeEnvironment="Default" name="SmartBear" resourceRoot="" soapui-version="5.7.0" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:testSuite id="dd0ddf61-d311-415c-90c1-d2477f80e57c" name="TestSuite 1"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="28e32964-370b-4c60-8aae-cb2e9992c747" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="TestCase 1" searchProperties="true"><con:settings/><con:testStep type="httprequest" name="HTTP Request" id="47f1e322-1a09-44d9-b781-4781842c7bd8"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" id="45010d78-dc62-4425-bc2f-4781fc53ea8f" name="HTTP Request" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://en.wikipedia.org/w/api.php?action=query&amp;format=json&amp;generator=random</con:endpoint><con:request/><con:assertion type="Valid HTTP Status Codes" id="e395a43f-fd02-40d7-998c-716305f0a666" name="Valid HTTP Status Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="2c73094b-b4ac-4aa2-a2dc-4e723cde0b6d" name="JsonPath Validate title"><con:configuration><path>$..query.pages.*.title</path><content>[Talk:Tudu]</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="70de616f-8d89-41c6-a737-5510370149a5" name="JsonPath Match"><con:configuration><path>$..title</path><content>not empty</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="JsonPath Existence Match" id="5f6c2421-e626-49b8-ae32-b21b12b11e41" name="JsonPath Existence Match"><con:configuration><path>$..query.pages.*.title</path><content>hola</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script" id="29943b9e-fd40-47b2-9954-acab296e6a64"><con:settings/><con:config><script>import java.util.Random
+
+def randomNum = new Random().nextInt(10000000)
+log.info(randomNum)
+def request = testRunner.testCase.getTestStepByName("Tu_Solicitud")
+def requestUrl = request.getPropertyValue("RequestURI")
+
+requestUrl += "?randomNumber=" + randomNum
+
+request.setPropertyValue("RequestURI", requestUrl)</script></con:config></con:testStep><con:testStep type="httprequest" name="HTTP Request2" id="dc416b7d-e03d-4410-a40e-3656e1b23200"><con:settings/><con:config method="GET" xsi:type="con:HttpRequest" id="1468b9b9-747a-4e0d-a99a-afe48b99606c" name="HTTP Request2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://en.wikipedia.org/w/api.php?action=query&amp;format=json&amp;pageids=randomNumber</con:endpoint><con:request/><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="groovy" name="Groovy Script2" id="bbd3a10a-42af-42a5-82e7-86f639007385"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+
+def response = messageExchange.response.responseContent
+def jsonResponse = new JsonSlurper().parseText(response)
+
+def page = jsonResponse.query.pages."34291552"
+def pageID = page.pageid
+def pageTitle = page.title
+
+// Almacenar el ID y el título en propiedades
+testRunner.testCase.setPropertyValue("pageID", pageID.toString())
+testRunner.testCase.setPropertyValue("pageTitle", pageTitle)
+</script></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
